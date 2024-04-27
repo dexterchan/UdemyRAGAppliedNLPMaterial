@@ -13,7 +13,6 @@ db/
 glove.6B.100d.txt
 *.joblib
 venv/
-*.txt
 *.pt
 *.zip
 .env
@@ -24,3 +23,5 @@ results/
 *.db
 .models/
 .env
+database.db
+db
