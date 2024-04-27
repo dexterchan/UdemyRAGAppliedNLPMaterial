@@ -17,3 +17,4 @@ venv/
 *.pt
 *.zip
 .env
+.ipynb_checkpoints
