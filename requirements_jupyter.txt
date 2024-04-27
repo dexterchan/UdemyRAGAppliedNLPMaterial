@@ -1,0 +1,4 @@
+jupyterlab
+black 
+isort
+jupyterlab_code_formatter
