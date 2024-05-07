@@ -1,29 +1,4 @@
-<<<<<<< HEAD
-#%%
-import torch
-import torchtext.vocab as vocab 
-# %% Code Change because of GloVe download issue
-# solution provided by Mitchell Miller
-# glove = vocab.GloVe(name='6B', dim =100)
-from torchtext.vocab import Vectors
- 
-class newGloVe(Vectors):
-    url = {
-        "42B": "https://huggingface.co/stanfordnlp/glove/resolve/main/glove.42B.300d.zip", 
-        "840B": "https://huggingface.co/stanfordnlp/glove/resolve/main/glove.840B.300d.zip",
-        "twitter.27B": "https://huggingface.co/stanfordnlp/glove/resolve/main/glove.twitter.27B.zip",
-        "6B": "https://huggingface.co/stanfordnlp/glove/resolve/main/glove.6B.zip",
-    }
- 
-    def __init__(self, name="840B", dim=300, **kwargs) -> None:
-        url = self.url[name]
-        print(f"Downloading from {url}")
-        name = "glove.{}.{}d.txt".format(name, str(dim))
-        super(newGloVe, self).__init__(name, url=url, **kwargs)
- 
-glove = newGloVe(name='6B', dim=100)
 
-=======
 # %%
 import torch
 import torchtext.vocab as vocab
@@ -32,7 +7,6 @@ import torchtext.vocab as vocab
 # Download glove model
 # https://nlp.stanford.edu/projects/glove/
 glove = vocab.GloVe(name="6B", dim=100)
->>>>>>> 8e1ac76 (nlp update after module 1)
 # %% number of words and embeddings
 glove.vectors.shape
 
@@ -75,13 +49,7 @@ def get_closest_words_from_embedding(word_emb, max_n=5):
 # e.g. King is to Queen like Man is to Woman
 def get_word_analogy(word1, word2, word3, max_n=5):
     # logic w1= king, ...
-<<<<<<< HEAD
-    # w2 - w1 + w3 --> w4
-    word1_emb = get_embedding_vector(word1)
-    word2_emb = get_embedding_vector(word2)
-    word3_emb = get_embedding_vector(word3)
-    word4_emb = word2_emb - word1_emb + word3_emb
-=======
+
     # w1 - w2 + w3 --> w4
     # w1 - w2 --> w3 - w4
     # w4 --> w3 + w2 - w1
@@ -90,7 +58,6 @@ def get_word_analogy(word1, word2, word3, max_n=5):
     word3_emb = get_embedding_vector(word3)
     # word4_emb = word1_emb - word2_emb + word3_emb
     word4_emb = word3_emb + word2_emb - word1_emb
->>>>>>> 8e1ac76 (nlp update after module 1)
     analogy = get_closest_words_from_embedding(word4_emb)
     return analogy
 
