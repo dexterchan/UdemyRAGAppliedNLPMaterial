@@ -27,3 +27,5 @@ sentencepiece==0.1.99
 streamlit==1.29.0
 torch==2.1.2
 transformers==4.36.2
+torchtext==0.16.2
+plotnine==0.13.5
