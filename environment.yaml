@@ -1,0 +1,37 @@
+name: rag
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - codecov
+  - beautifulsoup4
+  - chromadb
+  - datasets
+  - fastapi
+  - huggingface-hub
+  - ipykernel
+  - ipython
+  - langchain
+  - langchain-community
+  - langchain-core
+  - langsmith
+  - llama_cpp_python
+  - matplotlib
+  - nlpaug
+  - numpy
+  - open-clip-torch
+  - open-clip-torch-any-py3
+  - openai
+  - opencv-contrib-python
+  - pandas
+  - Pillow
+  - scikit-learn
+  - scipy
+  - seaborn
+  - sentence-transformers
+  - sentencepiece
+  - streamlit
+  - torch
+  - transformers
+
