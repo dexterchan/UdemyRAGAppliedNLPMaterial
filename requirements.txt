@@ -32,3 +32,5 @@ torchtext==0.16.2
 plotnine==0.13.5
 langchain-experimental==0.0.62
 pypdf==4.2.0
+torchtext==0.16.2
+plotnine==0.13.5

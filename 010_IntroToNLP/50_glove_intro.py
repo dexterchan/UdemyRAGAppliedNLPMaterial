@@ -4,7 +4,9 @@ import torchtext.vocab as vocab
 
 # %% Code Change because of GloVe download issue
 # solution provided by Mitchell Miller
-# glove = vocab.GloVe(name='6B', dim =100)
+# # Download glove model
+# https://nlp.stanford.edu/projects/glove/
+glove = vocab.GloVe(name="6B", dim=100)
 from torchtext.vocab import Vectors
 
 
@@ -67,11 +69,14 @@ def get_closest_words_from_embedding(word_emb, max_n=5):
 # e.g. King is to Queen like Man is to Woman
 def get_word_analogy(word1, word2, word3, max_n=5):
     # logic w1= king, ...
-    # w2 - w1 + w3 --> w4
+    # w1 - w2 + w3 --> w4
+    # w1 - w2 --> w3 - w4
+    # w4 --> w3 + w2 - w1
     word1_emb = get_embedding_vector(word1)
     word2_emb = get_embedding_vector(word2)
     word3_emb = get_embedding_vector(word3)
-    word4_emb = word2_emb - word1_emb + word3_emb
+    # word4_emb = word2_emb - word1_emb + word3_emb
+    word4_emb = word3_emb + word2_emb - word1_emb
     analogy = get_closest_words_from_embedding(word4_emb)
     return analogy
 
