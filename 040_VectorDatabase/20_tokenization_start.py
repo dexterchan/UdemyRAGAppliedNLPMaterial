@@ -4,6 +4,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter, SentenceTran
 import chromadb
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 from uuid import uuid4
+import torch
 
 # %% max_length
 def max_token_length(txt_list:list):
@@ -23,34 +24,71 @@ lorem_ipsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do e
 # chroma default sentence model "all-MiniLM-L6-v2"
 # https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
 # max input length: 256 tokens (word pieces)
-
+model_max_chunk_length = 256
+token_splitter = SentenceTransformersTokenTextSplitter(
+    tokens_per_chunk=model_max_chunk_length,
+    model_name="all-MiniLM-L6-v2",
+    chunk_overlap=0
+)
 
 # %% split the text
-
+lorem_ipsum_tokens = token_splitter.split_text(lorem_ipsum)
 # %% get max token length
-
+max_token_length(lorem_ipsum_tokens)
 
 # %% Real Implemetation for large corpus (Bible)
+text_path = "../data/bible.txt"
+with open(text_path, "r", encoding='utf-8') as f:
+    text_raw = f.read()
 
 # %% sneak peak of the text
-
+text_raw[:1000]
 # %% Character splitter
+#Since our model max input length is 256
+#assume 4 token per English words
+# we put 256 * 4 as the chunk size here
+character_splitter = RecursiveCharacterTextSplitter(
+    separators=['\n    \n', '\n\n', '\n', '. '],
+    chunk_size=1000,
+    chunk_overlap=0,
+)
 
+text_splitted = character_splitter.split_text(text_raw)
+print(f"Total number of splitted chunks: {len(text_splitted)}")
 
-# %% Check the token length
-# reference: model card "By default, input text longer than 256 word pieces is truncated."
+max_token_length(text_splitted)
+
+text_tokens = []
+for text in text_splitted:
+    text_tokens.extend(token_splitter.split_text(text))
+print(f"Total number of tokens: {len(text_tokens)}")
 
 # %%
-
+max_token_length(text_tokens)
 # %% Size of embedding vector
+device = "cuda" if torch.cuda.is_available() else 'cpu'
+embedding_fn = SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2",
+    device=device
+)
+
+sample_embedding1 = embedding_fn(text_tokens[0])
+sample_embedding2 = embedding_fn(text_tokens[1])
+print(f"embedding vector shape: {len(embedding_fn(text_tokens[0])[0])}")
+print(f"embedding vector shape: {len(embedding_fn(text_tokens[1])[0])}")
 
 
 # %% initialize chromadb
-
+chroma_db = chromadb.Client()
+chroma_collection = chroma_db.create_collection("bible", embedding_function=embedding_fn)
 
 # %% add all tokens to collection
+ids = [ str(uuid4()) for _ in range(len(text_tokens))]
 
+chroma_collection.add(ids=ids, documents=text_tokens)
 
 # %% Save the chroma collection
 # %% Run a Query
+res = chroma_collection.query(query_texts=["What did noah do?"], n_results=10)
+res['documents']
 # %%

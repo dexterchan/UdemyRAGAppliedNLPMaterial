@@ -13,7 +13,7 @@ from torch.utils.data import Dataset, DataLoader
 import seaborn as sns
 import matplotlib.pyplot as plt
 #%% data import 
-twitter_file = 'data/Tweets.csv'
+twitter_file = '../data/Tweets.csv'
 df = pd.read_csv(twitter_file).dropna()
 df
 
@@ -39,7 +39,8 @@ print(f"X train: {X_train.shape}, y train: {y_train.shape}\nX test: {X_test.shap
 one_hot = CountVectorizer()
 X_train_onehot = one_hot.fit_transform(X_train)
 X_test_onehot = one_hot.transform(X_test)
-
+X_train_onehot
+X_test_onehot
 #%% Dataset Class
 class SentimentData(Dataset):
     def __init__(self, X, y):
