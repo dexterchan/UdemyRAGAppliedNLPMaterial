@@ -25,4 +25,6 @@ results/
 .env
 database.db
 db
-
+.vector_cache
+.model/
+results/
