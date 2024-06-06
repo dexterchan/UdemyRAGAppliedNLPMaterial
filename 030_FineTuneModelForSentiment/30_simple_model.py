@@ -64,7 +64,9 @@ yelp_hidden_states
 
 #%%
 import joblib
-joblib.dump(yelp_hidden_states, 'model/yelp_hidden_states.joblib')
+import os
+os.makedirs(".models/", exist_ok=True)
+joblib.dump(yelp_hidden_states, '.models/yelp_hidden_states.joblib')
 
 
 #%%

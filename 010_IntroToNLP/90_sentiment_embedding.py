@@ -15,7 +15,7 @@ from torch.utils.data import Dataset, DataLoader
 from sentence_transformers import SentenceTransformer
 
 #%% import data
-twitter_file = 'data/Tweets.csv'
+twitter_file = '../data/Tweets.csv'
 df = pd.read_csv(twitter_file).dropna()
 df
 #%% Create Target Variable
@@ -38,12 +38,13 @@ embeddings = emb_model.encode(sentences)
 print(embeddings.squeeze().shape)
 
 #%% prepare X and y
-# X = emb_model.encode(df['text'].values)
+X = emb_model.encode(df['text'].values)
+import os
+os.makedirs("/tmp/data", exist_ok=True)
+with open("/tmp/data/tweets_X.pkl", "wb") as output_file:
+    pickle.dump(X, output_file)
 
-# with open("data/tweets_X.pkl", "wb") as output_file:
-#     pickle.dump(X, output_file)
-
-with open("data/tweets_X.pkl", "rb") as input_file:
+with open("/tmp/data/tweets_X.pkl", "rb") as input_file:
     X = pickle.load(input_file)
 
 y = df['class'].values

@@ -15,3 +15,5 @@ glove.6B.100d.txt
 venv/
 .ipynb_checkpoints
 .vector_cache/
+.model/
+results/

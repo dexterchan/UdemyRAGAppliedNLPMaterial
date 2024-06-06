@@ -14,11 +14,11 @@ from sklearn.dummy import DummyClassifier
 # source: https://huggingface.co/datasets/yelp_review_full/viewer/yelp_review_full/train?f%5blabel%5d%5bvalue%5d=0
 
 #%%  dataset
-yelp_hidden_states = joblib.load('model/yelp_hidden_states.joblib')
+yelp_hidden_states = joblib.load('.models/yelp_hidden_states.joblib')
 
 #%% Model and Tokenizer
 model_name = 'distilbert-base-uncased'
-device = 'cuda'
+
 num_labels = 5
 model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=num_labels)
 tokenizer = DistilBertTokenizer.from_pretrained(model_name)
