@@ -43,9 +43,11 @@ df_movies_filtered.drop_duplicates(subset=["id"], inplace=True)
 df_movies_filtered.shape
 
 # %%
-
+max_word_count(df_movies_filtered['overview'])
 # %% Word Distribution
-
+description_len = []
+for txt in df_movies_filtered.loc[:, "overview"]:
+    description_len.append(len(re.findall(r'\w+', txt)))
 
 # %% visualize token distribution
 
