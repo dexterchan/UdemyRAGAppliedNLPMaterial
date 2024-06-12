@@ -17,3 +17,5 @@ venv/
 .vector_cache/
 .model/
 results/
+*.db
+.models/
