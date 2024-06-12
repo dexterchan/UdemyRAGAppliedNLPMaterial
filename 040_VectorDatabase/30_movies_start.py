@@ -90,7 +90,7 @@ len(chroma_collection.get()["ids"])
 
 
 # %% Function to get title
-def get_title_by_description(query_text: str) -> str:
+def get_title_by_description(query_text: str) -> list[str]:
     n_best = 3
     res = chroma_collection.query(query_texts=[query_text], n_results=n_best)
 
