@@ -30,3 +30,4 @@ transformers==4.36.2
 transformers[torch]==4.36.2
 torchtext==0.16.2
 plotnine==0.13.5
+langchain-experimental==0.0.62
