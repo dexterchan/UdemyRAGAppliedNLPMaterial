@@ -89,8 +89,38 @@ res = ipcc_collection.query(query_texts=[query], n_results=5)
 
 
 # %% RAG
+def rag(query, n_results=5):
+    res = ipcc_collection.query(query_texts=[query], n_results=n_results)
+    docs = res["documents"][0]
+    joined_information = ";".join([f"{doc}" for doc in docs])
+    messages = [
+        {
+            "role": "system",
+            "content": """
+                        You are a helpful expert on climate change.
+                        Your users are asking questions about information contained in attached information.
+                        Answer the user's question using only this provided information.
+                        Please answer within 200 words.            
+                        """,
+        },
+        {
+            "role": "user",
+            "content": f"Question: {query}. \n Information: {joined_information}",
+        },
+    ]
+    openai_client = OpenAI()
+    model = "gpt-3.5-turbo"
+    response = openai_client.chat.completions.create(
+        model=model,
+        messages=messages,
+    )
+    content = response.choices[0].message.content
+    return content
 
 
 # %% Test RAG
+rag(query=query, n_results=5)
 
 # %%
+query = "What is the impact of climate change on wild life?"
+rag(query=query, n_results=5)
