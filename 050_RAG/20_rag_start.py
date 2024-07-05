@@ -1,3 +1,10 @@
+###
+# For postgres pgvector, see https://www.timescale.com/blog/how-to-build-llm-applications-with-pgvector-vector-store-in-langchain/
+# RDS >= 15.3, support pgvector
+# SHOW rds.extensions;
+# CREATE EXTENSION vector;
+###
+
 # %% packages
 import os
 from pprint import pprint
