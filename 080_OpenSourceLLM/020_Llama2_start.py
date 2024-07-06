@@ -1,18 +1,19 @@
-#%% packages
+# %% packages
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain_community.llms import LlamaCpp
 
-#%%
+# %%
 # download the model from HuggingFace
 # https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q5_K_M.gguf?download=true
 # save in subfolder "models"
+# huggingface-cli download TheBloke/Llama-2-7b-Chat-GGUF llama-2-7b-chat.Q5_K_M.gguf --local-dir models --local-dir-use-symlinks False
 
 # %% Callback Manager
 callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 
 llm = LlamaCpp(
-    model_path="models/llama-2-7b-chat.Q3_K_M.gguf",
+    model_path="models/llama-2-7b-chat.Q5_K_M.gguf",
     temperature=0.75,
     max_tokens=2000,
     top_p=1,
@@ -20,11 +21,14 @@ llm = LlamaCpp(
     verbose=True,  # Verbose is required to pass to the callback manager
 )
 
-#%% system and user prompt
+# %% system and user prompt
 system_prompt = "Eve lives in Hamburg.; Bob lives in Cape Town.; Alice lives in Mumbay."
 user_prompt = "Where does Eve live?"
-#%% naive approach
+# %% naive approach
+prompt_naive = f"{system_prompt}\n{user_prompt}"
+llm(prompt_naive)
+# %% set up prompt correctly
+prompt = f"[INST]<<SYS>>{system_prompt}<</SYS>>{user_prompt}[/INST]"
 
-#%% set up prompt correctly
-
-#%% run Llama2
+llm(prompt)
+# %% run Llama2
