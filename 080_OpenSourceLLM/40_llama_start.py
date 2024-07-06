@@ -42,12 +42,12 @@ def rag(query, n_results=5):
     time_end = time.time()
 
     print(f"elapsed time: {time_end-time_start}")
-    return response
+    return response.json()["response"]
 
 
 # %% calling rag
-response = rag("What is the climate change impact to farming?")
-# %%
 from pprint import pprint
 
-pprint(response.json()["response"])
+response_text = rag("What is the climate change impact to the food production?")
+pprint(response_text)
+# %%
