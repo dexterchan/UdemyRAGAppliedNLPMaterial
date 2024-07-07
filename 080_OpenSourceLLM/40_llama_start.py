@@ -1,7 +1,7 @@
 # LLM runner will be llama 3 supported by https://hub.docker.com/r/ollama/ollama
 # trigger Ollama : https://ollama.com/library/llama3
 # docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
-# docker exec -it ollama ollama pull llama3 
+# docker exec -it ollama ollama pull llama3
 # %% packages
 import os
 import chromadb
@@ -44,12 +44,12 @@ def rag(query, n_results=5):
     time_end = time.time()
 
     print(f"elapsed time: {time_end-time_start}")
-    return response.json()["response"]
+    return response.json()["response"], docs
 
 
 # %% calling rag
 from pprint import pprint
 
-response_text = rag("What is the climate change impact to our seafood supply?")
+response_text, docs = rag("What is the climate change impact to the food production?")
 pprint(response_text)
 # %%
