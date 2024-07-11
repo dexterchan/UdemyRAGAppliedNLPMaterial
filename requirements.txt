@@ -32,5 +32,6 @@ torchtext==0.16.2
 plotnine==0.13.5
 langchain-experimental==0.0.62
 pypdf==4.2.0
-torchtext==0.16.2
-plotnine==0.13.5
+anthropic==0.31.0
+panel==1.4.4
+yfinance==0.2.40

@@ -4,7 +4,7 @@ import os
 #%%
 client = anthropic.Anthropic(
     # defaults to os.environ.get("ANTHROPIC_API_KEY")
-    api_key= os.environ.get("CLAUDE_API"),
+    api_key= os.environ.get("ANTHROPIC_API_KEY"),
 )
 #%%
 message = client.messages.create(
