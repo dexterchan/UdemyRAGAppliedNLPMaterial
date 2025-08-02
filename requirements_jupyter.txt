@@ -1,4 +1,5 @@
 jupyterlab
+ipykernel
 black 
 isort
 jupyterlab_code_formatter

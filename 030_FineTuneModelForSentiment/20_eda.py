@@ -5,9 +5,9 @@ import pandas as pd
 import seaborn as sns
 
 # %%
-datasets = list_datasets()
-for dataset in datasets:
-    print(dataset)
+# datasets = list_datasets()
+# for dataset in datasets:
+#     print(dataset)
 
 # %% YELP Dataset
 # source: https://huggingface.co/datasets/yelp_review_full/viewer/yelp_review_full/train?f%5blabel%5d%5bvalue%5d=0
@@ -25,7 +25,8 @@ train_ds.features
 # train_ds.set_format('pandas')
 # train_ds[:]
 # %% imbalance of dataset
-val_count = pd.DataFrame(train_ds['label']).value_counts()
+val_count = pd.DataFrame(train_ds)["label"].value_counts()
+
 
 sns.countplot(val_count.tolist())
 

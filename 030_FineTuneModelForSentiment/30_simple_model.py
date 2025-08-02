@@ -22,7 +22,11 @@ train_ds = yelp['train'].select(range(1000))
 #%% Model and Tokenizer
 model_name = 'distilbert-base-uncased'
 # device = 'cuda' if torch.cuda.is_available() else 'cpu'
-device = 'cpu'
+
+device = 'mps' if torch.backends.mps.is_available() else "cpu"  # for Apple Silicon Macs
+print(f"Using device: {device}")
+device = 'cpu' #seem not working for last state extraction
+print(f"Using device: {device}")
 model = AutoModel.from_pretrained(model_name).to(device)
 tokenizer = DistilBertTokenizer.from_pretrained(model_name)
 # %% Tokenizer

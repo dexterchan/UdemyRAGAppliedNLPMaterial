@@ -19,8 +19,12 @@ yelp_hidden_states = joblib.load('.models/yelp_hidden_states.joblib')
 #%% Model and Tokenizer
 model_name = 'distilbert-base-uncased'
 
+device = 'mps' if torch.backends.mps.is_available() else "cpu"  # for Apple Silicon Macs
+print(f"Using device: {device}")
+
 num_labels = 5
-model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=num_labels)
+model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=num_labels).to(device)
+device = 'mps' if torch.backends.mps.is_available() else "cpu"  # for Apple Silicon Macs
 tokenizer = DistilBertTokenizer.from_pretrained(model_name)
 
 #%% Dataset
@@ -72,7 +76,19 @@ np.argmax(preds.predictions, axis=1)
 true_classes = yelp_ds_dict['test']['label']
 preds_classes = np.argmax(preds.predictions, axis=1)
 conf_mat = confusion_matrix(true_classes, preds_classes)
+conf_mat
 sns.heatmap(conf_mat, annot=True)
+#%% calculat F1 score
+from sklearn.metrics import f1_score
+f1 = f1_score(true_classes, preds_classes, average='weighted')
+print(f"F1 Score: {f1}")
+
+#%% calculate Precision and Recall
+from sklearn.metrics import precision_score, recall_score
+precision = precision_score(true_classes, preds_classes, average='macro')
+recall = recall_score(true_classes, preds_classes, average='macro')
+print(f"Precision: {precision}, Recall: {recall}")
+
 # %% accuracy
 accuracy_score(true_classes, preds_classes)
 # %% baseline classifier training
@@ -84,10 +100,15 @@ dummy_clf.fit(yelp_ds_dict['train']['label'], yelp_ds_dict['train']['label'])
 dummy_clf.score(yelp_ds_dict['test']['label'], yelp_ds_dict['test']['label'])
 
 # %% inspect individual reviews
-model_cpu = model.to('cpu')
+model_cpu = model
+
 #%% Inference
+input_ids = (yelp_ds_dict['test']['input_ids'])
+attention_mask = (yelp_ds_dict['test']['attention_mask'])
+
 with torch.no_grad():
-    outputs = model_cpu(yelp_ds_dict['test']['input_ids'], yelp_ds_dict['test']['attention_mask'])
+    outputs = model_cpu(input_ids, attention_mask)
+    
 #%% Loss calculation
 pred_labels = torch.argmax(outputs.logits, dim=1)
 loss = cross_entropy(outputs.logits, yelp_ds_dict['test']['label'], reduction='none')

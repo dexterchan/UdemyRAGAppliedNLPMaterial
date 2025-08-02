@@ -1,6 +1,6 @@
 # vector db folders
 db/
-
+.venv
 # config files
 *.toml
 
