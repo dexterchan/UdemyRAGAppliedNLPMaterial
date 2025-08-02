@@ -36,13 +36,13 @@ print(yelp_hidden_states[800]['input_ids'].shape)
 
 #%% DatasetDict
 yelp_ds_dict = DatasetDict({'train': train_ds, 'test':eval_ds})
-
+MAX_EPOCHS = 5
 #%% Trainer Arguments
 batch_size = 8  # adapt BS to fit into memory
 training_args = TrainingArguments(
     output_dir='./results',          # output directory
     learning_rate=2e-5,              # learning rate
-    num_train_epochs=20,              # total number of training epochs
+    num_train_epochs=MAX_EPOCHS,              # total number of training epochs
     per_device_train_batch_size=batch_size,  # batch size per device during training
     per_device_eval_batch_size=batch_size,   # batch size for evaluation
     warmup_steps=500,                # number of warmup steps for learning rate scheduler
@@ -82,10 +82,21 @@ conf_mat = confusion_matrix(true_classes, preds_classes)
 conf_mat
 sns.heatmap(conf_mat, annot=True)
 #%% calculat F1 score
-from sklearn.metrics import f1_score
-f1 = f1_score(true_classes, preds_classes, average='weighted')
+from sklearn.metrics import f1_score, precision_recall_fscore_support
+f1 = f1_score(true_classes, preds_classes, average='macro')
+
 print(f"F1 Score: {f1}")
 
+# Compute precision, recall, and F1 scores for each class
+precision, recall, f1, support = precision_recall_fscore_support(true_classes, preds_classes, average=None)
+
+metrics_df = pd.DataFrame({
+    'Precision': precision,
+    'Recall': recall,
+    'F1 Score': f1,
+    'Support': support
+}, index=[0, 1, 2, 3, 4])
+metrics_df
 #%% calculate Precision and Recall
 from sklearn.metrics import precision_score, recall_score
 precision = precision_score(true_classes, preds_classes, average='macro')
