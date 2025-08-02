@@ -70,6 +70,9 @@ preds = trainer.predict(yelp_ds_dict['test'])
 preds.metrics
 # %%
 np.argmax(preds.predictions, axis=1)
+s = np.argmax(preds.predictions, axis=1)
+v = [p[inx] for inx, p in zip([int(i) for i in s], preds.predictions)]
+
 # %%
 
 # %% confusion matrix
@@ -100,21 +103,37 @@ dummy_clf.fit(yelp_ds_dict['train']['label'], yelp_ds_dict['train']['label'])
 dummy_clf.score(yelp_ds_dict['test']['label'], yelp_ds_dict['test']['label'])
 
 # %% inspect individual reviews
-model_cpu = model
+model_cpu = model.to('cpu')
 
+test_data = yelp_ds_dict['test'][:]
+input_ids = torch.tensor(test_data['input_ids'], dtype=torch.long)
+attention_mask = torch.tensor(test_data['attention_mask'], dtype=torch.long)
+
+print(type(input_ids))  # Should be <class 'torch.Tensor'>
+print(input_ids.shape)  # Should be (batch_size, sequence_length)
+print(type(attention_mask))  # Should be <class 'torch.Tensor'>
+print(attention_mask.shape)  # Should be (batch_size, sequence_length)
 #%% Inference
-input_ids = (yelp_ds_dict['test']['input_ids'])
-attention_mask = (yelp_ds_dict['test']['attention_mask'])
-
 with torch.no_grad():
-    outputs = model_cpu(input_ids, attention_mask)
-    
+    outputs = model_cpu(input_ids=input_ids, attention_mask=attention_mask)
+  
 #%% Loss calculation
+import torch
+import torch.nn.functional as F
+
+# Convert label column to tensor
+labels = torch.tensor(test_data['label'], dtype=torch.long)
+
 pred_labels = torch.argmax(outputs.logits, dim=1)
-loss = cross_entropy(outputs.logits, yelp_ds_dict['test']['label'], reduction='none')
+loss = F.cross_entropy(outputs.logits, labels, reduction='none')
 
 # %%
-df_individual_reviews = pd.DataFrame({'text': yelp_ds_dict['test']['text'], 'label': yelp_ds_dict['test']['label'], 'pred_label': pred_labels, 'loss': loss}).sort_values('loss', ascending=False).reset_index(drop=True)
+
+df_individual_reviews = yelp_ds_dict['test'].to_pandas()[['text','label']]
+df_individual_reviews['pred_label'] = pred_labels.numpy()
+df_individual_reviews['loss'] = loss.numpy()
+df_individual_reviews = df_individual_reviews.sort_values('loss', ascending=False).reset_index(drop=True)
+
 # %%
 df_individual_reviews
 # %%
@@ -126,13 +145,14 @@ sns.lineplot(data=df_individual_reviews, x='label', y='loss')
 
 #%%
 # %% Push the model to HuggingFace Hub
-trainer.create_model_card(model_name = 'distilbert-base-uncased-yelp')
+trainer.create_model_card(model_name = 'boar-distilbert-base-uncased-yelp')
 trainer.push_to_hub(commit_message='Yelp review classification')
 
 # %% load model from HuggingFace Hub
 # name was changed online to distilbert-base-uncased-yelp
 from transformers import pipeline
 model_id = 'BertGollnick/distilbert-base-uncased-yelp-new'
+model_id = "dexter-chan/results"
 tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
 classifier = pipeline('sentiment-analysis', model=model_id, tokenizer=tokenizer)
 # %%
