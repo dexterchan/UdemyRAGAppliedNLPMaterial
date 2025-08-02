@@ -94,7 +94,7 @@ metrics_df = pd.DataFrame({
     'Precision': precision,
     'Recall': recall,
     'F1 Score': f1,
-    'Support': support
+    'NumOfActualSamples': support
 }, index=[0, 1, 2, 3, 4])
 metrics_df
 #%% calculate Precision and Recall
