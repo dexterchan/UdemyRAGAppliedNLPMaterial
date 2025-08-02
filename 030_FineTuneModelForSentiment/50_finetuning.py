@@ -151,8 +151,7 @@ trainer.push_to_hub(commit_message='Yelp review classification')
 # %% load model from HuggingFace Hub
 # name was changed online to distilbert-base-uncased-yelp
 from transformers import pipeline
-model_id = 'BertGollnick/distilbert-base-uncased-yelp-new'
-model_id = "dexter-chan/results"
+model_id = "dexter-chan/boar-distilbert-base-uncased-yelp"
 tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
 classifier = pipeline('sentiment-analysis', model=model_id, tokenizer=tokenizer)
 # %%
